@@ -1,5 +1,5 @@
 ---
-name: guide
+name: start
 description: Use when working on the Sharetribe web template and you need help setting it up for the first time, deploying changes to production, or building a new feature or customization.
 ---
 
