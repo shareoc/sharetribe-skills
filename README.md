@@ -13,7 +13,13 @@ will help you with:
 
 ## One-time setup
 
-Open Claude Code in this project directory and run:
+**1. Clone this repo into your Sharetribe project folder:**
+
+```bash
+git clone https://github.com/shareoc/sharetribe-skills.git
+```
+
+**2. Open Claude Code in your Sharetribe project, then run:**
 
 ```
 /plugin install ./sharetribe-skills --scope project
@@ -24,7 +30,7 @@ That's it. The skill is now available every time you open Claude Code in this pr
 ## Usage
 
 ```
-/sharetribe:guide
+/sharetribe:start
 ```
 
 Claude will ask what you need and walk you through it.
