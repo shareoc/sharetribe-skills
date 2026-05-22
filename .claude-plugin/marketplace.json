@@ -2,6 +2,6 @@
   "name": "sharetribe",
   "owner": { "name": "Sharetribe" },
   "plugins": [
-    { "name": "sharetribe-skills", "source": "./sharetribe-skills" }
+    { "name": "sharetribe-skills", "source": "./" }
   ]
 }
