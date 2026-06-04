@@ -30,7 +30,7 @@ Ask the user to confirm they have installed:
 - **Node.js** — [nodejs.org](https://nodejs.org/)
 - **Yarn** — `npm install -g yarn` if not installed
 
-Ask: "Do you have Git, Node.js, and Yarn installed?"
+Ask: "Do you know if you have Git, Node.js, and Yarn installed?"
 
 ### Step 2: Clone and Install
 

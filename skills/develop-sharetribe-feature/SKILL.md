@@ -8,7 +8,7 @@ user_invocable: true
 
 ## Overview
 
-Guides the user from a vague idea to a deployed change. Always gather requirements first — ask questions until you understand exactly what needs to be built. Then implement, commit, and push. The user never needs to think about git.
+Guides the user from a vague idea to a deployed change. Always gather requirements first. Ask questions until you understand exactly what needs to be built. Then implement, commit, and push. The user never needs to think about git.
 
 ## Process
 
@@ -22,7 +22,7 @@ If config doesn't exist, continue without it (but you'll have less context).
 
 ### Step 1: Understand the Request
 
-The user has described something they want to change or add. Before touching any code, ask clarifying questions **one at a time** until you understand:
+The user has described something they want to change or add. Before touching any code, ask clarifying questions until you understand:
 
 - **What** exactly should change (text, layout, behaviour, new section, etc.)
 - **Where** in the app it should appear (which page, which component)
@@ -30,7 +30,7 @@ The user has described something they want to change or add. Before touching any
 - **Why** — understanding the goal helps you make better implementation decisions
 
 **Rules for this phase:**
-- One question per message. Never bundle questions.
+- Ask the user, in multiple choice, interatctive Ask User Questions format (4 at a time), between 3-10 questions (or until you have a clear understanding) that will help them formulate their requirements.
 - Prefer concrete options over open-ended questions where possible. ("Do you want this to appear at the top of the page, or at the bottom?")
 - If the request involves text content, ask the user to provide the exact wording.
 - Keep your language plain — avoid technical terms like "component", "prop", "state".
@@ -40,14 +40,20 @@ Continue asking until you are confident you understand what to build. Do not pro
 
 ### Step 1B: Check If This Can Be Done Without Code
 
-Before writing any code, assess whether the request can be handled entirely through the Sharetribe Console. This saves deployment time and keeps the codebase simpler.
+Before writing any code, assess whether the request can be handled entirely through the Sharetribe Console. This is extremely important. 
 
-**No-code is possible for:**
+It is important to understand that the codebase contains configuration files. However, they are only there to serve as examples if one would want to override the no-code settings with local configurations. You should never override Console no-code settings with these local configurations. Do this only if the user is confident they know what they are doing, or if the feature request is not possible otherwise.
+
+For the translation tasks, you should always be adamant that these changes should be made in the Console. If a user says "translate my marketplace into another language", you should ALWAYS insist they do this via Console. The codebase has a file via which these edits can be made, but it is an extremely large file, and will cost a lot of tokens to modify, and the primary translations are managed through Console, not the filebase. 
+
+Below is a reference table for you to better understand what exactly can be configured via the Console (no-code):
+
+No-code is possible for:
 
 | Category | What you can change |
 |----------|---------------------|
 | **Branding** | Primary color, logo, favicon, app icon, login background image, social media image |
-| **Content pages** | Landing page (hero, sections, CTAs), Terms of Service, Privacy Policy, About page, custom content pages. If the request relates to either CREATING or MODIFYING a content page, load `guides/content-pages.md` to understand what can be achieved using no-code. |
+| **Content pages** | Landing page (hero, sections, CTAs), Terms of Service, Privacy Policy, About page, custom content pages. If the request relates to either CREATING or MODIFYING a content page, load `guides/content-pages.md` to understand what can be achieved using the no-code page editor. |
 | **Marketplace texts** | Button labels, error messages, help text, any UI copy across the site |
 | **Email texts** | Content of automatic emails (booking confirmations, quote requests, offers, etc.) |
 | **Footer** | Links, social media profiles, copyright text |
@@ -100,11 +106,25 @@ Guidelines:
 
 ### Step 4: Review Locally
 
-Ask the user to check the change on their local dev server (`http://localhost:3000`):
+**For UX changes (any visual, layout, text, or structural change):**
 
-> "I've made the change. If your local server is running (`yarn run dev`), you can check it at http://localhost:3000. Does it look right?"
+Use Playwright to verify the change yourself before involving the user.
 
-If the user spots something off, ask them to describe it specifically and fix it. Repeat until they're happy.
+1. Ask the user if `yarn run dev` is running. If not, ask them to start it and wait for confirmation.
+2. Use `mcp__playwright__navigate` to open the relevant page at `http://localhost:3000` — pick the URL based on what changed (e.g. `/` for homepage, `/s` for search, `/l/<any-listing-slug>` for listing pages, `/profile/<any-user-id>` for profiles).
+3. Use `mcp__playwright__screenshot` to capture the page.
+4. Inspect the screenshot yourself. Ask: does the change appear as intended based on what was agreed in Step 2?
+   - If something looks wrong (missing element, wrong position, broken layout, incorrect text), diagnose it, fix the code, and take a new screenshot. Repeat until the change looks correct.
+   - If it looks right, show the screenshot to the user with a brief description of what you verified:
+     > "Looks good — [describe what you can see, e.g. 'the new banner is showing at the top of the homepage with the correct text']. Does this match what you had in mind?"
+
+Only escalate to the user once you're satisfied the change is correct, or if you've tried fixing it twice and still can't get it right.
+
+**For non-visual changes (behaviour, logic, flow):**
+
+Ask the user to check manually:
+
+> "I've made the change. If your local server is running (`yarn run dev`), you can check it at http://localhost:3000. Does it work as expected?"
 
 If they don't have the dev server running, offer to help them start it, or skip ahead if they're comfortable going straight to staging.
 

@@ -4,5 +4,11 @@
   "version": "0.1.0",
   "author": {
     "name": "Aleksi O'Connor"
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
   }
 }
