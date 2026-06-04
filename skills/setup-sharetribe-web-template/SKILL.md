@@ -51,18 +51,15 @@ Before running config, ask the user for each credential one at a time using AskU
 **Sharetribe Client ID**
 > Found in Sharetribe Console under **Build → Advanced → Applications**
 > Sign up free at console.sharetribe.com/new if you don't have an account.
+> **Important:** Make sure you're in the **Dev environment** (top-left switcher in Console) before copying the ID — the Test and Dev environments have different credentials, and using the wrong one is a common reason things don't work after setup.
 
 **Sharetribe Client Secret**
-> Same location: Console → Build → Advanced → Applications
+> Same location: Console → Build → Advanced → Applications (still in Dev environment)
+> Note: you're only copying the Secret here — don't edit any settings on this page.
 
 **Stripe Publishable Key (Sandbox)**
 > Set up Stripe in Console first, then copy the Sandbox publishable key.
 > Guide: [Set up Stripe for a custom marketplace](https://www.sharetribe.com/help/en/articles/set-up-stripe)
-
-**Map Provider**
-> Ask: "Do you want to use Mapbox or Google Maps for location services?"
-> Configured in Sharetribe Console — not an env variable. Provide the appropriate link:
-> - Mapbox or Google Maps: [How to set up a map provider](https://www.sharetribe.com/help/en/articles/8676185-how-to-set-up-mapbox-or-google-maps-for-location-services)
 
 ### Step 4: Run Config Script
 

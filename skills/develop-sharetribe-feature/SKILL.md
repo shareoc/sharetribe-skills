@@ -42,7 +42,9 @@ Continue asking until you are confident you understand what to build. Do not pro
 
 Before writing any code, assess whether the request can be handled entirely through the Sharetribe Console. This is extremely important. 
 
-It is important to understand that the codebase contains configuration files. However, they are only there to serve as examples if one would want to override the no-code settings with local configurations. You should never override Console no-code settings with these local configurations. Do this only if the user is confident they know what they are doing, or if the feature request is not possible otherwise.
+It is important to understand that the codebase contains configuration files. However, they are only there to serve as examples if one would want to override the no-code settings with local configurations. You should never override Console no-code settings with these local configurations, if it is not necessary. Do this only if the user is confident they know what they are doing, or if the feature request is not possible otherwise.
+
+Modifying translation files will be expensive. Instead of loading the entire file into memory, and rewriting it entirely, it is more efficient to batch this operation. Be smart about this.
 
 For the translation tasks, you should always be adamant that these changes should be made in the Console. If a user says "translate my marketplace into another language", you should ALWAYS insist they do this via Console. The codebase has a file via which these edits can be made, but it is an extremely large file, and will cost a lot of tokens to modify, and the primary translations are managed through Console, not the filebase. 
 
@@ -110,9 +112,9 @@ Guidelines:
 
 Use Playwright to verify the change yourself before involving the user.
 
-1. Ask the user if `yarn run dev` is running. If not, ask them to start it and wait for confirmation.
-2. Use `mcp__playwright__navigate` to open the relevant page at `http://localhost:3000` — pick the URL based on what changed (e.g. `/` for homepage, `/s` for search, `/l/<any-listing-slug>` for listing pages, `/profile/<any-user-id>` for profiles).
-3. Use `mcp__playwright__screenshot` to capture the page.
+1. Check if the dev server is already running by running `lsof -ti :3000`. If the port is in use, proceed. If not, start it yourself by running `yarn run dev` with `run_in_background: true` from the project directory (the current working directory). Tell the user: "Starting the dev server for you — give it about 30 seconds to come up." Then wait ~30 seconds before proceeding.
+2. Tell the user: "Let me take a screenshot to check how it looks..." — then use `mcp__plugin_sharetribe_playwright__browser_navigate` to open the relevant page at `http://localhost:3000` — pick the URL based on what changed (e.g. `/` for homepage, `/s` for search, `/l/<any-listing-slug>` for listing pages, `/profile/<any-user-id>` for profiles).
+3. Use `mcp__plugin_sharetribe_playwright__browser_take_screenshot` to capture the page.
 4. Inspect the screenshot yourself. Ask: does the change appear as intended based on what was agreed in Step 2?
    - If something looks wrong (missing element, wrong position, broken layout, incorrect text), diagnose it, fix the code, and take a new screenshot. Repeat until the change looks correct.
    - If it looks right, show the screenshot to the user with a brief description of what you verified:
@@ -124,9 +126,9 @@ Only escalate to the user once you're satisfied the change is correct, or if you
 
 Ask the user to check manually:
 
-> "I've made the change. If your local server is running (`yarn run dev`), you can check it at http://localhost:3000. Does it work as expected?"
+> "I've made the change. Check it at http://localhost:3000 — does it work as expected?"
 
-If they don't have the dev server running, offer to help them start it, or skip ahead if they're comfortable going straight to staging.
+Before sending this, check if the dev server is running (`lsof -ti :3000`). If not, start it with `yarn run dev` using `run_in_background: true`, then tell the user: "I've started the dev server — give it about 30 seconds, then check http://localhost:3000."
 
 ### Step 5: Commit and Push
 
