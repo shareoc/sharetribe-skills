@@ -177,5 +177,3 @@ The user may be non-technical. Use plain language throughout:
 |---------|-----|
 | Change not visible on staging | Wait 2–4 min for Render to rebuild, then hard-refresh the browser |
 | Works locally but crashes on staging | SSR error — look for browser-only APIs used outside of `useEffect` |
-| Push rejected | Run `git pull origin main` first, then push again |
-| Wrong file edited | Read the surrounding code more carefully; ask user for a screenshot if unsure where something lives |

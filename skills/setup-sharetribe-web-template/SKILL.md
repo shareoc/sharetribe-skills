@@ -27,10 +27,26 @@ If the file doesn't exist, continue with Step 1.
 
 Ask the user to confirm they have installed:
 - **Git** — [git-scm.com](https://git-scm.com/downloads)
-- **Node.js** — [nodejs.org](https://nodejs.org/)
+- **Node.js 22.x** — [nodejs.org](https://nodejs.org/) 
 - **Yarn** — `npm install -g yarn` if not installed
 
 Ask: "Do you know if you have Git, Node.js, and Yarn installed?"
+
+Once they confirm Git is installed, check whether git is configured with a name and email. Ask them to run:
+
+```bash
+git config --global user.name
+git config --global user.email
+```
+
+If either returns blank, ask for their name and email and run:
+
+```bash
+git config --global user.name "Their Name"
+git config --global user.email "their@email.com"
+```
+
+Explain: "Git needs this to label your commits. Without it, saving your changes later will fail."
 
 ### Step 2: Clone and Install
 
@@ -44,37 +60,47 @@ yarn install
 
 Tell the user this installs all dependencies and may take a minute.
 
-### Step 3: Collect Credentials
+### Step 3: Find Your Credentials
 
-Before running config, ask the user for each credential one at a time using AskUserQuestion. Explain where to find each one.
+Tell the user:
 
-**Sharetribe Client ID**
-> Found in Sharetribe Console under **Build → Advanced → Applications**
-> Sign up free at console.sharetribe.com/new if you don't have an account.
-> **Important:** Make sure you're in the **Dev environment** (top-left switcher in Console) before copying the ID — the Test and Dev environments have different credentials, and using the wrong one is a common reason things don't work after setup.
+> "Before we run the setup script, you'll need to find three credentials. You'll enter them directly into the terminal."
 
-**Sharetribe Client Secret**
-> Same location: Console → Build → Advanced → Applications (still in Dev environment)
-> Note: you're only copying the Secret here — don't edit any settings on this page.
+Walk the user through finding each one. Don't ask them to share the values with you.
 
-**Stripe Publishable Key (Sandbox)**
-> Set up Stripe in Console first, then copy the Sandbox publishable key.
-> Guide: [Set up Stripe for a custom marketplace](https://www.sharetribe.com/help/en/articles/set-up-stripe)
+**1. Sharetribe Client ID and Client Secret**
+> Go to [console.sharetribe.com](https://console.sharetribe.com) (sign up free if you don't have an account).
+> In the top-left corner, make sure you're in the **Dev environment** — not Test or Live.
+> Navigate to **Build → Advanced → Applications**.
+> Copy the **Client ID** and **Client Secret**. Keep them handy (e.g. open Notepad or a text file).
+>
+> ⚠️ Using the wrong environment's credentials is the most common reason setup doesn't work. Double-check the top-left switcher says **Dev**.
+
+**2. Stripe Publishable Key (Sandbox)**
+> First, connect Stripe to your Sharetribe marketplace by following this guide: [Set up Stripe for a custom marketplace](https://www.sharetribe.com/help/en/articles/8413086-how-to-set-up-stripe-for-payments-on-your-marketplace).
+> Once connected, your Sandbox publishable key will be shown in the Console.
+
+Ask: "Do you have all three credentials? Let me know when you're ready and I'll walk you through the next step."
 
 ### Step 4: Run Config Script
 
-Once the user has their credentials ready:
+Once the user confirms they have their credentials ready, tell them to type the following into their terminal (still in the `web-template/` folder):
 
 ```bash
 yarn run config
 ```
 
-Tell the user this script will prompt for the three values they just collected:
-1. `REACT_APP_SHARETRIBE_SDK_CLIENT_ID` → paste client ID
-2. `SHARETRIBE_SDK_CLIENT_SECRET` → paste client secret
-3. `REACT_APP_STRIPE_PUBLISHABLE_KEY` → paste Stripe publishable key
+Explain what will happen:
 
-The script creates a `.env` file. The app won't start without it.
+> "The terminal will ask you three questions, one at a time. Paste each value when prompted and press Enter."
+>
+> 1. `REACT_APP_SHARETRIBE_SDK_CLIENT_ID` → paste your Sharetribe Client ID
+> 2. `SHARETRIBE_SDK_CLIENT_SECRET` → paste your Sharetribe Client Secret
+> 3. `REACT_APP_STRIPE_PUBLISHABLE_KEY` → paste your Stripe Sandbox Publishable Key
+
+> "This creates a `.env` file in the project. The app won't start without it."
+
+Ask: "Did the script finish without errors? You should see a message saying the config was saved."
 
 ### Step 5: Start the Server
 
@@ -103,14 +129,6 @@ If the file already exists, merge this value in — do not overwrite other field
 | `yarn install` | Install dependencies |
 | `yarn run config` | Set up `.env` with required credentials |
 | `yarn run dev` | Start local dev server |
-
-## Common Issues
-
-| Problem | Fix |
-|---------|-----|
-| App won't start | `.env` missing — re-run `yarn run config` |
-| Map not loading | Configure map provider in Sharetribe Console |
-| Payment errors | Check Stripe keys match what's in Console |
 
 ## Summary Commands
 

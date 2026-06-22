@@ -1,6 +1,6 @@
 ---
 name: deploy-sharetribe-to-render
-description: Use when a user wants to deploy the Sharetribe Web Template to Render as a staging environment, including writing render.yaml, configuring environment variables, and walking through the Render dashboard setup.
+description: Use when a user wants to deploy the Sharetribe Web Template to Render as a staging environment via a Blueprint deployment, including writing render.yaml and walking through the Render dashboard setup.
 user_invocable: true
 ---
 
@@ -32,9 +32,9 @@ If no config or no `renderServiceName`, continue with Step 1.
 Ask the user two questions before touching any files:
 
 **1a. Service name**
-> "What do you want to name your Render service? This becomes your URL: `https://<name>.onrender.com`"
+> "What do you want to name your Render service?"
 
-If `renderServiceName` was found in config, suggest it as the default.
+If `renderServiceName` was found in config, suggest it as the default. Note that the service name should be unique (if not unique, render appends a random string to the name. This will cause issues with deployment, since we need to match assign the deployment URL as an environment variable). If a user types in a generic name, append a short random string to the name to ensure uniqueness.
 
 Also ask for:
 - **Marketplace name** (e.g. "My Marketplace") — pre-fill from config `marketplaceName` if present
@@ -58,6 +58,8 @@ services:
     name: <service-name>
     runtime: node
     buildCommand: yarn install --production=false; yarn build
+    startCommand: yarn start
+    plan: free
     envVars:
       - key: NODE_VERSION
         value: 22.22.0
@@ -83,8 +85,6 @@ services:
         sync: false
       - key: REACT_APP_STRIPE_PUBLISHABLE_KEY
         sync: false
-      - key: REACT_APP_MAPBOX_ACCESS_TOKEN
-        sync: false
       - key: REACT_APP_MARKETPLACE_NAME
         sync: false
 ```
@@ -101,7 +101,7 @@ Tell the user the file has been written and explain that `sync: false` means Ren
 
 ### Step 3: Test SSR Locally
 
-Before deploying, ask the user to test server-side rendering locally:
+Before deploying, test server-side rendering locally, on behalf of the user:
 
 ```bash
 yarn run dev-server
@@ -115,15 +115,13 @@ Only proceed once SSR is confirmed working.
 
 ### Step 4: Commit and Push
 
-Ask the user to commit and push `render.yaml`:
+Commit and push `render.yaml` on behalf of the user:
 
 ```bash
 git add render.yaml
 git commit -m "Add Render deployment config"
 git push
 ```
-
-Ask: "Done? Is render.yaml pushed to your GitHub repository?"
 
 ### Step 5: Render Dashboard Walkthrough
 
@@ -132,34 +130,26 @@ Walk through each step, asking "Done?" before moving to the next.
 **5a. Create account**
 > "Do you have a Render account? If not, sign up at https://dashboard.render.com/register"
 
-**5b. Create new Web Service**
-> "In the Render dashboard, click New → Web Service, then connect your GitHub account and select your repository."
+**5b. Create new Blueprint**
+> "In the Render dashboard, navigate to **Blueprints**, and click on **New Blueprint Instance**. Click on **Configure Git Provider**, and configure the new instance using your GitHub account.
+> "Render will detect the `render.yaml` file and pre-fill the service name, build command, and all non-secret settings automatically."
 
-**5c. Configure build command**
-> "In the service settings, find the Build Command field and set it to:
-> `yarn install --production=false; yarn build`"
-
-**5d. Add NODE_VERSION**
-> "Before clicking Create, click Advanced and add this environment variable:
-> - Key: `NODE_VERSION`  Value: `22.22.0`"
-
-**5e. Add secret environment variables**
-Tell the user to add each of the following in the Advanced section. For each one, tell them where to find the value:
+**5c. Add secret environment variables**
+Tell the user that Render will show a form for all the `sync: false` variables from `render.yaml`. For each one, tell them where to find the value:
 
 | Variable | Value / Where to find it |
 |----------|--------------------------|
 | `REACT_APP_SHARETRIBE_SDK_CLIENT_ID` | Sharetribe Console → Build → Advanced → Applications. Use your **Dev environment** client ID for a dev staging app. |
-| `SHARETRIBE_SDK_CLIENT_SECRET` | Same location as client ID |
+| `SHARETRIBE_SDK_CLIENT_SECRET` | Same location as Client ID |
 | `REACT_APP_STRIPE_PUBLISHABLE_KEY` | Stripe dashboard — use the test key starting with `pk_test` |
-| `REACT_APP_MAPBOX_ACCESS_TOKEN` | Mapbox account dashboard (if using Mapbox) |
 | `REACT_APP_MARKETPLACE_NAME` | Whatever you want your marketplace to be called |
 
 If basic auth was enabled, also add:
 | `BASIC_AUTH_USERNAME` | The username chosen in Step 1 |
 | `BASIC_AUTH_PASSWORD` | The password chosen in Step 1 |
 
-**5f. Create web service**
-> "Click 'Create Web Service'. The first build takes a few minutes — you can watch the logs in the Render dashboard."
+**5d. Apply Blueprint**
+> "Click 'Apply'. The first build takes a few minutes — you can watch the logs in the Render dashboard."
 
 ### Step 6: Write Config
 
@@ -183,15 +173,8 @@ Once the build completes:
 
 > "Visit https://<service-name>.onrender.com — does your marketplace load?"
 
-If basic auth is enabled, remind the user to test that the password prompt appears.
+If it does not load, the issue is likely in the service name. If a non-unique service name is provided, render will append a random string to the name. This means that REACT_APP_MARKETPLACE_ROOT_URL must match the unique identifier. You must guide the user to find the deployment url via the Render Dashboard, and update the .yaml file accordingly, and push it to git.
 
-## Common Issues
+### Common issues
 
-| Problem | Fix |
-|---------|-----|
-| Build fails with yarn error | Check build command is exactly `yarn install --production=false; yarn build` |
-| White screen / server crash | SSR error — check logs for `window is not defined`. Fix browser-only code before redeploying. |
-| Marketplace shows wrong name | Set `REACT_APP_MARKETPLACE_NAME` env var and redeploy |
-| Map not loading | Add `REACT_APP_MAPBOX_ACCESS_TOKEN` and redeploy |
-| Basic auth not appearing | Check `REACT_APP_ENV=production` is set |
-| Changes not appearing | Env vars with `REACT_APP_` prefix are baked into the build — redeploy after any change |
+If the user is having issues with the deployment, ask them to copy and paste the deploy logs into the chat.
