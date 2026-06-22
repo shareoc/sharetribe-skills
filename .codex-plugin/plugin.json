@@ -1,0 +1,27 @@
+{
+  "name": "sharetribe",
+  "version": "0.1.0",
+  "description": "Guided assistant for non-technical users working on the Sharetribe web template — helps with setup, deployment, and building new features.",
+  "author": {
+    "name": "Aleksi O'Connor"
+  },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Sharetribe",
+    "shortDescription": "Setup, deploy, and build features on your Sharetribe marketplace",
+    "longDescription": "Sharetribe Skills helps non-technical users work on their Sharetribe web template marketplace. Get step-by-step guidance for first-time local setup, deploying to staging on Render, committing and pushing changes, and building new features or customizations.",
+    "developerName": "Aleksi O'Connor",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me set up the Sharetribe web template for the first time.",
+      "I want to deploy my marketplace to staging.",
+      "I want to add a feature to my marketplace."
+    ]
+  }
+}
