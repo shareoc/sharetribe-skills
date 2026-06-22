@@ -4,7 +4,7 @@
   "description": "Guided assistant for non-technical users working on the Sharetribe web template — helps with setup, deployment, and building new features.",
   "version": "0.1.0",
   "author": {
-    "name": "Aleksi O'Connor"
+    "name": "Sharetribe"
   },
   "skills": "./skills/"
 }
